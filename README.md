@@ -4,7 +4,7 @@
 
 # Project Description
 
-This repository contains the source code and necessary resources to develop a web application dedicated to Fast Delivery management. The primary goal of the application is to enable a logistics company to supervise and manage the daily operations of its delivery personnel, as well as the assignment and reassignment of packages.
+This repository contains the source code and necessary resources to develop a web application dedicated to last-mile logistics management. The primary goal of the application is to enable a logistics company to supervise and manage the daily operations of its delivery personnel, as well as the assignment and reassignment of packages.
 
 # Key Features
 
