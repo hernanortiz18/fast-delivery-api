@@ -5,6 +5,9 @@ const cors = require("cors");
 require("dotenv").config();
 const routes = require("./routes/index.routes");
 const path = require("path");
+const db = require("./config/db")
+
+const models = require("./models")
 
 const app = express();
 
@@ -23,5 +26,14 @@ app.use((err, req, res, next) => {
 });
 app.use("/api", routes);
 
-app.listen(5001, () => console.log("Servidor en el puerto 5001"));
-module.exports = app;
+db.sync({ force: true })
+  .then(function () {
+    app.listen(3001, () =>
+      console.log("Servidor en el puerto 5001")
+    );
+  })
+  .catch(console.error);
+  module.exports = app;
+
+
+// Servidor en el puesto 5001
