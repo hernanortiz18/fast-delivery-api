@@ -1,9 +1,9 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from 'sequelize'
 
-const db = new Sequelize("fastdelivery", "", "", {
-    host: "localhost",
-    dialect: "postgres",
-    logging: false
+const db = new Sequelize('fastdelivery', '', '', {
+  host: 'localhost',
+  dialect: 'postgres',
+  logging: false
 })
 
 export default db
