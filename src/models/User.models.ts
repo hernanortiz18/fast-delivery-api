@@ -3,6 +3,7 @@ import db from '../config/db'
 import bcrypt from 'bcrypt'
 
 interface UserAttributes {
+  id?: Number
   email: string
   password: string
   name: string
