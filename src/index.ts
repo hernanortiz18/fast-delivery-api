@@ -24,7 +24,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): express.R
 })
 app.use('/api', routes)
 
-db.sync({ force: true })
+db.sync({ force: false })
   .then(() => {
     app.listen(3001, () => console.log('Servidor en el puerto 3001'))
   })

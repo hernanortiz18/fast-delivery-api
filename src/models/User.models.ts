@@ -55,7 +55,14 @@ User.init(
   }
 )
 
-User.beforeSave(async (user: User, options: SaveOptions<any>) => {
+User.beforeCreate(async (user: User, options: SaveOptions<any>) => {
+  const salt = bcrypt.genSaltSync(8)
+  const password: string = user.get('password') as string
+  const hash = await user.hash(password, salt)
+  user.set('password', hash)
+})
+
+User.beforeUpdate(async (user: User, options: SaveOptions<any>) => {
   const salt = bcrypt.genSaltSync(8)
   const password: string = user.get('password') as string
   const hash = await user.hash(password, salt)

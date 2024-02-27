@@ -43,7 +43,7 @@ export const UsersController = {
 
   getUserById: (req: Request, res: Response) => {
     const { id } = req.params
-    User.findByPk(id)
+    User.findOne({where: {id}})
       .then(user => {
         if (user === null) {
           res.status(404).send('No se ha encontrado el usuario')
@@ -92,6 +92,24 @@ export const UsersController = {
         console.error(error)
         res.status(500).send('Ha ocurrido un error al realizar la operación.')
       })
+  },
+
+  updateUserById : (req: Request, res: Response)=> {
+    const {name,lastName} = req.body
+    const {id} = req.params
+    User.update({name,lastName,},{ where: {id}, returning: true })
+    .then(([_rows, user])=>res.status(201).send(user))
+    .catch((error)=> console.log(error))
+
+  },
+
+  passRecovery : (req: Request, res: Response) => {
+    const {password} = req.body
+    const {id} = req.params
+    User.update({password},{where:{id}, returning: true})
+    .then(([_rows, user])=>res.status(201).send(user))
+    .catch((error)=>console.log(error))
+
   }
 
 }

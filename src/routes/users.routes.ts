@@ -4,10 +4,13 @@ import { UsersController } from '../controllers/users.controllers'
 
 const router = express.Router()
 
-router.get("/single/:id", validateAuth, UsersController.getUserById)
-router.post("/login", UsersController.login)
-router.delete("/:id", validateAuth, UsersController.deleteUserById)
-router.get("/", validateAuth, UsersController.getAllUsers)
 router.post("/register", UsersController.register)
+router.post("/login", validateAuth, UsersController.login)
+router.put("/:id/forgot-password", UsersController.passRecovery)
+router.get("/single/:id", UsersController.getUserById)
+router.delete("/:id", UsersController.deleteUserById)
+router.put("/:id", UsersController.updateUserById )
+router.get("/me", validateAuth, (req,res)=>{res.sendStatus(200)})
+router.get("/", UsersController.getAllUsers)
 
 export default router
