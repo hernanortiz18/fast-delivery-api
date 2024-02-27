@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.post("/register", UsersController.register)
 router.post("/login", validateAuth, UsersController.login)
+router.post("/logout", UsersController.logout)
 router.put("/:id/forgot-password", UsersController.passRecovery)
 router.get("/single/:id", UsersController.getUserById)
 router.delete("/:id", UsersController.deleteUserById)
