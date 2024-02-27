@@ -8,5 +8,6 @@ router.get("/single/:id", validateAuth, UsersController.getUserById)
 router.post("/login", UsersController.login)
 router.delete("/:id", validateAuth, UsersController.deleteUserById)
 router.get("/", validateAuth, UsersController.getAllUsers)
+router.post("/register", UsersController.register)
 
 export default router
