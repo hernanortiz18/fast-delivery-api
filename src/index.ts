@@ -5,6 +5,8 @@ import cors from 'cors'
 import routes from './routes/index.routes'
 import db from './config/db'
 import dotenv from 'dotenv'
+import { createAdminUser } from './utils/index.utils'
+import User from './models/User.models'
 dotenv.config()
 
 const app = express()
@@ -24,8 +26,17 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): express.R
 })
 app.use('/api', routes)
 
+
 if (require.main === module) {
   db.sync({ force: false })
+  .then(async () => {
+    return await User.count()
+  })
+  .then(async (count) => {
+    if (count === 0) {
+      return await createAdminUser()
+    }
+  })
     .then(() => {
       app.listen(3001, () => console.log('Servidor en el puerto 3001'));
     })
