@@ -1,20 +1,18 @@
 import { Model, DataTypes, SaveOptions } from 'sequelize'
 import db from '../config/db'
 import bcrypt from 'bcrypt'
-
-interface UserAttributes {
-  id?: Number
-  email: string
-  password: string
-  name: string
-  lastName: string
-  status: string
-  role: string
-}
+import { UserAttributes } from '../types'
 
 class User extends Model<UserAttributes> {
   async hash (password: string, salt: string): Promise<string> {
     return await bcrypt.hash(password, salt)
+  }
+
+  async validatePassword (password: string): Promise<boolean> {
+    const salt: string = await this.get('salt') as string
+    const originalPassword = await this.get('password') as string
+    const hash = await this.hash(password, salt)
+    return (hash === originalPassword)
   }
 }
 
@@ -47,6 +45,10 @@ User.init(
     role: {
       type: DataTypes.ENUM('Driver', 'Admin'),
       allowNull: false
+    },
+    salt: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   },
   {
@@ -55,15 +57,9 @@ User.init(
   }
 )
 
-User.beforeCreate(async (user: User, options: SaveOptions<any>) => {
+User.beforeSave(async (user: User, options: SaveOptions<any>) => {
   const salt = bcrypt.genSaltSync(8)
-  const password: string = user.get('password') as string
-  const hash = await user.hash(password, salt)
-  user.set('password', hash)
-})
-
-User.beforeUpdate(async (user: User, options: SaveOptions<any>) => {
-  const salt = bcrypt.genSaltSync(8)
+  user.set('salt', salt)
   const password: string = user.get('password') as string
   const hash = await user.hash(password, salt)
   user.set('password', hash)
