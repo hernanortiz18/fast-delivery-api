@@ -26,7 +26,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): express.R
 })
 app.use('/api', routes)
 
-db.sync({ force: true })
+
+if (require.main === module) {
+  db.sync({ force: false })
   .then(async () => {
     return await User.count()
   })
@@ -35,9 +37,10 @@ db.sync({ force: true })
       return await createAdminUser()
     }
   })
-  .then(() => {
-    app.listen(3001, () => console.log('Servidor en el puerto 3001'))
-  })
-  .catch(console.error)
+    .then(() => {
+      app.listen(3001, () => console.log('Servidor en el puerto 3001'));
+    })
+    .catch(console.error);
+}
 
 export default app
