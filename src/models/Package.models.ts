@@ -1,14 +1,7 @@
-import { Model, DataTypes, IntegerDataType, DateDataType } from 'sequelize'
+import { Model, DataTypes } from 'sequelize'
 import db from '../config/db'
-
-interface PackageAttributes {
-  address: string
-  clientName: string
-  weight: IntegerDataType
-  deliveryDate: DateDataType
-  status: string
-  DeliveryDriver?: number
-}
+import { PackageAttributes } from '../types'
+import User from './User.models'
 
 class Package extends Model<PackageAttributes> {
 }
@@ -19,7 +12,7 @@ Package.init(
       type: DataTypes.STRING,
       allowNull: false
     },
-    clientName: {
+    client_name: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -27,13 +20,21 @@ Package.init(
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    deliveryDate: {
+    delivery_date: {
       type: DataTypes.DATE,
       allowNull: false
     },
     status: {
       type: DataTypes.ENUM('Pending', 'On Course', 'Delivered', 'Free'),
       allowNull: false
+    },
+    driver_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: User,
+        key: 'id'
+      }
     }
   },
   {

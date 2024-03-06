@@ -2,9 +2,8 @@
 import supertest from 'supertest'
 import app from '../index'
 
-
-describe("Test API routes", () => {
-  it("should register a new user", async () => {
+describe('Test API routes', () => {
+  it('should register a new user', async () => {
     const newUser = {
       email: 'test@example.com',
       password: 'password123',
@@ -22,8 +21,7 @@ describe("Test API routes", () => {
     expect(response.body).toHaveProperty('email', 'test@example.com')
   })
 
-
-  it("should login a user", async () => {
+  it('should login a user', async () => {
     const loginCredentials = {
       email: 'test@example.com',
       password: 'password123'

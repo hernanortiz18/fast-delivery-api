@@ -16,8 +16,8 @@ export const UsersController = {
             email,
             password,
             name,
-            lastName,
-            status: 'Inactive',
+            last_name: lastName,
+            status: 'Free',
             role: 'Driver',
             salt: ''
           })
@@ -52,7 +52,8 @@ export const UsersController = {
               const payload = {
                 id: userValues.id,
                 name: userValues.name,
-                lastName: userValues.lastName,
+                role: userValues.role,
+                lastName: userValues.last_name,
                 email: userValues.email
               }
               const token = generateToken(payload)
@@ -137,7 +138,7 @@ export const UsersController = {
   updateUserById: (req: Request, res: Response) => {
     const { name, lastName } = req.body
     const { id } = req.params
-    User.update({ name, lastName }, { where: { id }, returning: true })
+    User.update({ name, last_name: lastName }, { where: { id }, returning: true })
       .then(([_rows, user]) => res.status(201).send(user))
       .catch((error) => console.log(error))
   },
