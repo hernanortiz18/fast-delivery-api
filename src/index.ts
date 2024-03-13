@@ -8,7 +8,28 @@ import dotenv from 'dotenv'
 import { createAdminUser } from './utils/index.utils'
 dotenv.config()
 
+// swagger
+const path = require("path")
+const swaggerUI = require('swagger-ui-express')
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerSpec = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: 'Fast-Delivery',
+      version: "1.0.0'"
+    },
+    servers: [
+      {
+        url: "http://localhost:3001"
+      }
+    ]
+  },
+  apis: [`${path.join(__dirname, "./routes/*.ts")}`]
+}
+
 const app = express()
+app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 
 app.use(express.json())
 app.use(logger('dev'))

@@ -4,6 +4,8 @@ import User from '../models/User.models'
 
 export const UsersController = {
 
+
+  
   register: (req: Request, res: Response): void => {
     const { email, password, name, lastName } = req.body
 
