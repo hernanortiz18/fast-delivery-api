@@ -10,8 +10,7 @@ router.get('/', validateAuth, PackagesControllers.getAllPackages)
  *   get:
  *     summary: Obtener todos los paquetes
  *     description: Obtiene una lista de todos los paquetes.
- *     security:
- *       - BearerAuth: []
+ 
  *     responses:
  *       '200':
  *         description: Lista de paquetes obtenida exitosamente
@@ -19,8 +18,6 @@ router.get('/', validateAuth, PackagesControllers.getAllPackages)
  *           application/json:
  *             schema:
  *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Package'
  *       '401':
  *         description: No autorizado, token inválido o ausente
  *       '500':

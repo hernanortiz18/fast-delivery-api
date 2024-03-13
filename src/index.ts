@@ -47,7 +47,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): express.R
 app.use('/api', routes)
 
 if (require.main === module) {
-  db.sync({ force: false })
+  db.sync({ force: true })
     .then(async () => {
       return await createAdminUser()
     })
