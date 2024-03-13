@@ -72,12 +72,12 @@ export const PackagesControllers = {
       })
   },
   createPackage: (req: Request, res: Response) => {
-    const { address, clientName, weight, deliveryDate } = req.body
+    const { address, client_name, weight, delivery_date } = req.body
     Package.create({
       address,
-      client_name: clientName,
+      client_name,
       weight,
-      delivery_date: deliveryDate,
+      delivery_date,
       status: 'Free',
       driver_id: null
     }).then((createdPackage) => {
@@ -99,10 +99,10 @@ export const PackagesControllers = {
           driver_id: driverId,
           status: 'Pending'
         }, {
-          where: {
-            id
-          }
+        where: {
+          id
         }
+      }
       ))
     })
     Promise.all(promises)

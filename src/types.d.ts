@@ -9,6 +9,8 @@ export interface UserAttributes {
   status: string
   role: string
   salt?: string
+  token?: string | null
+  last_activity: string
 }
 
 export type TokenAttributes = Omit<UserAttributes, 'password', 'salt'>
@@ -21,4 +23,11 @@ export interface PackageAttributes {
   delivery_date: DateDataType
   status: string
   driver_id?: Identifier | null
+}
+
+export interface PayloadAttributes {
+  email: string
+  name: string
+  role: string
+  lastName: string
 }

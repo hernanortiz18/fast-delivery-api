@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import { generateToken } from '../config/tokens.config'
 import User from '../models/User.models'
+import { sendVerifyEmail } from '../utils/index.utils'
+import { format } from 'date-fns'
 
 export const UsersController = {
 
@@ -8,23 +10,36 @@ export const UsersController = {
   
   register: (req: Request, res: Response): void => {
     const { email, password, name, lastName } = req.body
+    const actualDate = format(new Date(), 'dd/MM/yy')
 
     User.findOne({ where: { email } })
       .then(existingUser => {
         if (existingUser != null) {
           res.status(400).json({ message: 'El usuario ya existe' })
         } else {
+          const token = generateToken({
+            email, name, lastName, role: 'Driver'
+          })
           User.create({
             email,
             password,
             name,
             last_name: lastName,
-            status: 'Free',
+            status: 'Unvalidated',
             role: 'Driver',
-            salt: ''
+            salt: '',
+            token,
+            last_activity: actualDate
           })
             .then(newUser => {
-              res.status(201).json(newUser)
+              sendVerifyEmail(token, email)
+                .then(() => {
+                  res.status(201).json(newUser)
+                })
+                .catch(error => {
+                  console.error(error)
+                  res.status(500).json({ message: 'Ha ocurrido un error al enviar el mail de registro' })
+                })
             })
             .catch(error => {
               console.error(error)
@@ -37,18 +52,41 @@ export const UsersController = {
         res.status(500).json({ message: 'Ha ocurrido un error al registrar el usuario' })
       })
   },
+  verifyEmail: (req: Request, res: Response): void => {
+    const { token } = req.params
+    if (token == null) res.status(400).send('No token found')
+    User.update({
+      token: null,
+      status: 'Free'
+    }, { where: { token }, returning: true })
+      .then((user) => {
+        if (user == null) res.status(401).send('No user ofund with that token')
+        res.status(200).send('User verified')
+      })
+      .catch((err) => {
+        console.error(err)
+        res.status(500).json({ message: 'Ha ocurrido un error al verificar el usuario' })
+      })
+  },
 
-  login (req: Request, res: Response): void {
+  login: (req: Request, res: Response): void => {
     const { email, password } = req.body
+    const actualDate = format(new Date(), 'dd/MM/yy')
 
     User.findOne({ where: { email } })
-      .then((user) => {
+      .then(async (user) => {
         if (user == null) {
-          res.sendStatus(401)
+          return res.status(401).send('User not found')
         } else {
-          user.validatePassword(password).then((isValid) => {
+          const status = user.getDataValue('status')
+          const lastActivity = user.getDataValue('last_activity')
+          return await user.validatePassword(password).then(async (isValid) => {
             if (!isValid) {
-              res.sendStatus(401)
+              return res.status(401).send('Wrong password')
+            } else if (status === 'Unvalidated') {
+              return res.status(401).send('User needs to validate email')
+            } else if (status === 'Disabled' && lastActivity === actualDate) {
+              return res.status(401).send('User is disabled')
             } else {
               const userValues = user.get()
               const payload = {
@@ -64,17 +102,35 @@ export const UsersController = {
                 httpOnly: true,
                 secure: true
               })
-              res.status(200).send(payload)
+              if (status === 'Disabled') {
+                return await User.update({ status: 'Free', last_activity: actualDate }, { where: { email } })
+                  .then(() => {
+                    return res.status(200).send(payload)
+                  })
+                  .catch((error) => {
+                    console.error('Error when trying to update user:', error)
+                    return res.status(500).send('Error when trying to update user')
+                  })
+              }
+              return await User.update({ last_activity: actualDate }, { where: { email } })
+                .then(() => {
+                  return res.status(200).send(payload)
+                })
+                .catch((error) => {
+                  console.error('Error when trying to update user:', error)
+                  return res.status(500).send('Error when trying to update user')
+                })
             }
-          }).catch((error) => {
+          }
+          ).catch((error) => {
             console.error('Error when trying to login user:', error)
-            res.status(500).send('Internal Server Error')
+            return res.status(500).send('Internal Server Error')
           })
         }
       })
       .catch((error) => {
         console.error('Error when trying to login user:', error)
-        res.status(500).send('Internal Server Error')
+        return res.status(500).send('Internal Server Error')
       })
   },
 
@@ -138,9 +194,9 @@ export const UsersController = {
   },
 
   updateUserById: (req: Request, res: Response) => {
-    const { name, lastName } = req.body
     const { id } = req.params
-    User.update({ name, last_name: lastName }, { where: { id }, returning: true })
+    const actualDate = format(new Date(), 'dd/MM/yy')
+    User.update({ ...req.body, last_activity: actualDate }, { where: { id }, returning: true })
       .then(([_rows, user]) => res.status(201).send(user))
       .catch((error) => console.log(error))
   },

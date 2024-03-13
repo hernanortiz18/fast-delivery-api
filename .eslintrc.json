@@ -1,0 +1,12 @@
+{
+    "overrides": [
+        {
+            "files": [
+                "src/index.ts"
+            ],
+            "rules": {
+                "import/order": "off"
+            }
+        }
+    ]
+}

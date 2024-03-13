@@ -1,5 +1,5 @@
 import { Model, DataTypes, SaveOptions } from 'sequelize'
-import db from '../config/db'
+import db from '../config/db.config'
 import bcrypt from 'bcrypt'
 import { UserAttributes } from '../types'
 
@@ -49,6 +49,14 @@ User.init(
     salt: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    last_activity: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   },
   {
