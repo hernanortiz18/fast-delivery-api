@@ -1,12 +1,11 @@
 import express, { NextFunction, Request, Response } from 'express'
+require('dotenv').config() // eslint-disable-line no-alert
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 import cors from 'cors'
 import routes from './routes/index.routes'
-import db from './config/db'
-import dotenv from 'dotenv'
+import db from './config/db.config'
 import { createAdminUser } from './utils/index.utils'
-dotenv.config()
 
 const app = express()
 
