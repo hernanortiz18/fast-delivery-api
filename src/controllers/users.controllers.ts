@@ -16,7 +16,7 @@ export const UsersController = {
           res.status(400).json({ message: 'El usuario ya existe' })
         } else {
           const token = generateToken({
-            email, name, lastName, role: 'Driver'
+            id: 0, email, name, lastName, role: 'Driver'
           })
           User.create({
             email,

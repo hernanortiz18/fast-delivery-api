@@ -26,6 +26,7 @@ export interface PackageAttributes {
 }
 
 export interface PayloadAttributes {
+  id: Number | undefined
   email: string
   name: string
   role: string
