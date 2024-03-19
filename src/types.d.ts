@@ -30,5 +30,5 @@ export interface PayloadAttributes {
   email: string
   name: string
   role: string
-  lastName: string
+  last_name: string
 }
