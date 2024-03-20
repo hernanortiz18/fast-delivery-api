@@ -108,7 +108,8 @@ router.put('/forgot-password/:id', UsersController.passRecovery)
 router.get('/single/:id', UsersController.getUserById)
 router.delete('/:id', UsersController.deleteUserById)
 router.put('/update/:id', UsersController.updateUserById)
-router.get('/me', validateAuth, (req, res) => { res.sendStatus(200) })
+router.get('/me', validateAuth, UsersController.me)
+
 
 
   /**
