@@ -6,6 +6,8 @@ import { format } from 'date-fns'
 
 export const UsersController = {
 
+
+  
   register: (req: Request, res: Response): void => {
     const { email, password, name, last_name } = req.body
     const actualDate = format(new Date(), 'dd/MM/yy')

@@ -7,7 +7,28 @@ import routes from './routes/index.routes'
 import db from './config/db.config'
 import { createAdminUser } from './utils/index.utils'
 
+// swagger
+const path = require("path")
+const swaggerUI = require('swagger-ui-express')
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerSpec = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: 'Fast-Delivery',
+      version: "1.0.0'"
+    },
+    servers: [
+      {
+        url: "http://localhost:3001"
+      }
+    ]
+  },
+  apis: [`${path.join(__dirname, "./routes/*.ts")}`]
+}
+
 const app = express()
+app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 
 app.use(express.json())
 app.use(logger('dev'))
@@ -25,7 +46,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): express.R
 app.use('/api', routes)
 
 if (require.main === module) {
-  db.sync({ force: false })
+  db.sync({ force: true })
     .then(async () => {
       return await createAdminUser()
     })

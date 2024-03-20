@@ -89,7 +89,7 @@ export const PackagesControllers = {
       })
   },
   startDelivery: (req: Request, res: Response) => {
-    const idArray = req.body.idArray as Number[]
+    const idArray = req.body.ids as Number[]
     const driverId = Number(req.body.tokenInfo.id)
     const promises: Array<Promise<[affectedCount: number]> | Promise<void>> = []
     promises.push(driverStatusChanger(driverId, 'Pending'))
