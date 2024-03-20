@@ -134,8 +134,11 @@ export const UsersController = {
 
   logout: (_req: Request, res: Response) => {
     res.clearCookie('token')
-    res.sendStatus(204)
-    console.log('token del usuario borrado')
+    res.status(204).send('token del usuario borrado')
+  },
+
+  me: (req: Request, res: Response) => {
+    res.status(200).send(req.body.tokenInfo)
   },
 
   getUserById: (req: Request, res: Response) => {
